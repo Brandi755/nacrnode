@@ -3,9 +3,17 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../database/db");
+const { user } = require("../database/db");
+
+// var sendM = require("../envoiemail");
+
+
+
 
 process.env.SECRET_KEY = 'secret';
 
+// 7 OK 
+// si il n'arrive pas a s'enregistrer il creer un compte
 router.post("/register", (req, res) => {
     db.client.findOne({
             where: { email: req.body.email }
@@ -37,173 +45,32 @@ router.post("/register", (req, res) => {
         })
 });
 
-router.get("/profile/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id }
-        })
-        .then(client => {
-            if (client) {
-                let token = jwt.sign(client.dataValues,
-                    process.env.SECRET_KEY, {
-                        expiresIn: 1440
-                    });
-                res.status(200).json({ token: token })
-            } else {
-                res.json("error le client n'a pas dans la base !!")
-            }
-        })
-        .catch(err => {
-            res.json(err)
-        })
-});
+// 7
+// Ok mais ne genere pas de token sur postman mais le token est ok status 200?
+// phpmyadmin changer le status a 1 du client et token vient!
 
 router.post("/login", (req, res) => {
-    console.log(req.body);
-    db.client.findOne({
-            where: { email: req.body.email }
-        }).then(client => {
-            if (client) {
-                if (bcrypt.compareSync(req.body.password,
-                        client.password)) {
-                    let token = jwt.sign(client.dataValues,
-                        process.env.SECRET_KEY, {
-                            expiresIn: 1440
-                        });
+    db.client.findOne({ where: { email: req.body.email } })
+        .then(client => {
+            if (client.Status === true) {
+                if (bcrypt.compareSync(req.body.password, client.password)) {
+                    let clientdata = {
+                        nom: client.nom,
+                        prenom: client.prenom,
+                        email: client.email,
+                        tel: client.tel,
+                    };
+                    let token = jwt.sign(clientdata, process.env.SECRET_KEY, {
+                        expiresIn: 1440,
+                    })
                     res.status(200).json({ token: token })
                 } else {
-                    res.status(520).json("error email or password")
+                    res.json("Erreur email ou mot de passe")
                 }
             } else {
-                return res.status(520).json('client not found')
+                res.json({ message: "Vous devez valider votre email" })
             }
-        })
-        .catch(err => {
-            res.json(err)
-        })
-});
 
-
-router.put("/update/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id }
-        })
-        .then(client => {
-            if (client) {
-                password = bcrypt.hashSync(req.body.password, 10);
-                req.body.password = password;
-                client.update(req.body)
-                    .then(clientitem => {
-                        console.log(clientitem);
-                        db.client.findOne({
-                                where: { id: clientitem.id }
-                            })
-                            .then(client => {
-                                let token = jwt.sign(client.dataValues,
-                                    process.env.SECRET_KEY, {
-                                        expiresIn: 1440 //s
-                                    });
-                                res.status(200).json({ token: token })
-                            })
-                            .catch(err => {
-                                res.status(402).send(err + 'bad request')
-                            })
-                    })
-                    .catch(err => {
-                        res.status(402).send("impossible de metter a jour le client" + err);
-                    })
-            } else {
-                res.json("client n'est pas dans la base ")
-            }
-        })
-        .catch(err => {
-            res.json(err);
-        })
-});
-
-
-// NON pas ok 
-// pour recuperer le profil(compte) du client grâce a son id
-router.get("/profile/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id }
-        })
-        .then(client => {
-            if (client) {
-                let token = jwt.sign(client.dataValues,
-                    process.env.SECRET_KEY, {
-                        expiresIn: 1440
-                    });
-                res.status(200).json({ token: token })
-            } else {
-                res.json("error le client n'est pas dans la base !!")
-            }
-        })
-        .catch(err => {
-            res.json(err)
-        })
-});
-
-
-
-
-// OK (ne pas oublier de cocher dans postman les changement)
-// et change le mot de passe
-// metre a jour des info avec le id du client
-router.put("/update/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id }
-        })
-        .then(client => {
-            if (client) {
-                password = bcrypt.hashSync(req.body.password, 10);
-                req.body.password = password;
-                client.update(req.body)
-                    .then(clientitem => {
-                        console.log(clientitem);
-                        db.client.findOne({
-                                where: { id: clientitem.id }
-                            })
-                            .then(client => {
-                                let token = jwt.sign(client.dataValues,
-                                    process.env.SECRET_KEY, {
-                                        expiresIn: 1440 //s
-                                    });
-                                res.status(200).json({ token: token })
-                            })
-                            .catch(err => {
-                                res.status(402).send(err + 'bad request')
-                            })
-                    })
-                    .catch(err => {
-                        res.status(402).send("impossible de metter a jour le client" + err);
-                    })
-            } else {
-                res.json("client n'est pas dans la base ")
-            }
-        })
-        .catch(err => {
-            res.json(err);
-        })
-});
-
-
-//NON
-// route pour changer le mot de passe
-router.patch("/reset/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id }
-        })
-        .then((client) => {
-            if (client) {
-                password = bcrypt.hashSync(req.body.password, 10);
-                req.body.password = password;
-
-                client.update(req.body.password)
-                console.log(req.body.password)
-                res.status(200).json("mot de passe changer avec sucees");
-            } else {
-                res.json("le mot de passe n'a pu être changer");
-            }
         })
         .catch(err => {
             res.json(err);
@@ -212,45 +79,10 @@ router.patch("/reset/:id", (req, res) => {
 
 
 
-// OK
-// recuperer le client et les info par le id 
-router.get("/getClientById/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id },
-            attributes: {
-                include: [],
-                exclude: ["created_at", "updated_at", "password"]
-            },
-        })
-        .then(client => {
-            res.json({ client: client })
-        })
-        .catch(err => {
-            res.send('error' + err)
-        })
-});
 
-//  revoir cette route
-// fonctionne mais na pas encor vraiment de raison 
-//  cette route et pour afficher le client par le id et voir toutes les cle afficher
-router.get("/getClientById/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id },
-            include: [{
-                model: db.cle
-            }]
-        })
-        .then(client => {
-            res.json({ client: client })
-        })
-        .catch(err => {
-            res.send('error' + err)
-        })
-});
 
-// je ne sais pas si il fonctionne
-// mot de passe oublier du client 
-// dans phpmyadmin verifier que le client existe et dans postman juste le mail
+
+// 7 ok
 router.post("/forgetpassword", (req, res) => {
     var randtoken = require('rand-token');
     var token = randtoken.generate(16);
@@ -302,37 +134,219 @@ router.post("/forgetpassword", (req, res) => {
         })
 });
 
+//7 ok mais pas compris 
+// mise a jour du mdp
+// le forget dans la bd, c'est celui qui genere le token (on verifie si il existe) dans ce cas on mets à jour
+// de la le req.body.forget , quand je vais cliquer sur mail il va m'envoyer sur une page dans lequel il y'aura un parametre qui s'appel forget 
+// dans le quel il y aura le token qui est stocker dans la bd
+// on prend se Token / qand je vais saisir mon mot de passe qaund je vais metre a jour mon mdp ca va taper sur update password ? a revoir
+
+router.post("/updatepassword", (req, res) => {
+    db.client.findOne({
+            where: { forget: req.body.forget }
+        }).then(client => {
+            if (client) {
+                const hash = bcrypt.hashSync(req.body.password, 10);
+                req.body.password = hash;
+                client.update({
+                        password: req.body.password,
+                        forget: null
+
+                    })
+                    .then(() => {
+                        res.json({
+                            message: "votre mot de passe est mis a jour"
+                        })
+                    })
+                    .catch(err => {
+                        res.json(err);
+                    })
+            } else {
+                res.json("link not validé");
+            }
+        })
+        .catch(err => {
+            res.json(err)
+        })
+});
 
 
+// 7 ok 
 
-
-
-
-
-// ajouter une cle a client 
-//  pas sur que cette route soit necessaire est ne fonctionne
-//  pour voir si un client peu ajouter plusieur cle
-// je pense que non a effacer la route je pense
-
-// router.post("/addclientToCle", (req, res) => {
+// router.post("/validemail", (req, res) => {
 //     db.client.findOne({
 //             where: { email: req.body.email }
-//         })
-//         .then(client => {
+//         }).then(client => {
 //             if (client) {
-//                 client.addCles([req.body.cleid]).then(reps => {
-//                     res.json(reps)
-//                 })
+//                 if (client.Status !== 1) {
+//                     client.update({
+//                             Status: 1
+//                         })
+//                         .then(() => {
+//                             res.json({
+//                                 message: "votre email est validé"
+//                             })
+//                         })
+//                         .catch(err => {
+//                             res.json(err);
+//                         })
+//                 } else {
+//                     res.json("votre mail est déja validé")
+//                 }
 //             } else {
-//                 res.json("not found")
+//                 res.status(404).json("client pas trouvé!!!")
 //             }
 //         })
 //         .catch(err => {
-//             res.send('error' + err)
+//             res.json(err)
 //         })
 // });
 
 
+// test 7 soir
+router.post("/validemail", (req, res) => {
+    db.client
+        .findOne({
+            where: { email: req.body.email },
+        })
+        .then((client) => {
+            if (client) {
+                if (client.Status != 1) {
+                    client
+                        .update({
+                            Status: 1,
+                        })
+                        .then((itemclient) => {
+                            res.status(200).json("votre compte a ete activer");
+                        })
+                        .catch((err) => {
+                            res.json(err);
+                        });
+
+                } else {
+                    res.json("votre compte est déja activer");
+                }
+            } else {
+                res.status(404).json("client not found");
+
+            }
+        })
+        .catch((err) => {
+            res.json(err);
+        });
+});
+
+
+
+
+
+
+// OK (ne pas oublier de cocher dans postman les changement)
+// et change le mot de passe
+// metre a jour des info avec le id du client
+router.put("/update/:id", (req, res) => {
+    db.client.findOne({
+            where: { id: req.params.id }
+        })
+        .then(client => {
+            if (client) {
+                password = bcrypt.hashSync(req.body.password, 10);
+                req.body.password = password;
+                client.update(req.body)
+                    .then(clientitem => {
+                        console.log(clientitem);
+                        db.client.findOne({
+                                where: { id: clientitem.id }
+                            })
+                            .then(client => {
+                                let token = jwt.sign(client.dataValues,
+                                    process.env.SECRET_KEY, {
+                                        expiresIn: 1440 //s
+                                    });
+                                res.status(200).json({ token: token })
+                            })
+                            .catch(err => {
+                                res.status(402).send(err + 'bad request')
+                            })
+                    })
+                    .catch(err => {
+                        res.status(402).send("impossible de metter a jour le client" + err);
+                    })
+            } else {
+                res.json("client n'est pas dans la base ")
+            }
+        })
+        .catch(err => {
+            res.json(err);
+        })
+});
+
+
+
+
+
+// pour recuperer le profil(compte) du client grâce a son id
+router.get("/profile/:id", (req, res) => {
+    db.client.findOne({
+            where: { id: req.params.id }
+        })
+        .then(client => {
+            if (client) {
+                let token = jwt.sign(client.dataValues,
+                    process.env.SECRET_KEY, {
+                        expiresIn: 1440
+                    });
+                res.status(200).json({ token: token })
+            } else {
+                res.json("error le client n'est pas dans la base !!")
+            }
+        })
+        .catch(err => {
+            res.json(err)
+        })
+});
+
+//NON
+// route pour changer le mot de passe
+router.patch("/reset/:id", (req, res) => {
+    db.client.findOne({
+            where: { id: req.params.id }
+        })
+        .then((client) => {
+            if (client) {
+                password = bcrypt.hashSync(req.body.password, 10);
+                req.body.password = password;
+
+                client.update(req.body.password)
+                console.log(req.body.password)
+                res.status(200).json("mot de passe changer avec sucees");
+            } else {
+                res.json("le mot de passe n'a pu être changer");
+            }
+        })
+        .catch(err => {
+            res.json(err);
+        })
+});
+
+
+// OK
+// recuperer le client et les info par le id 
+router.get("/getClientById/:id", (req, res) => {
+    db.client.findOne({
+            where: { id: req.params.id },
+            attributes: {
+                include: [],
+                exclude: ["created_at", "updated_at", "password"]
+            },
+        })
+        .then(client => {
+            res.json({ client: client })
+        })
+        .catch(err => {
+            res.send('error' + err)
+        })
+});
 
 
 module.exports = router;

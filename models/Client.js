@@ -32,10 +32,21 @@ module.exports = (dbinfo, Sequelize) => {
                 allowNull: true
             },
             cp: {
-                type: Sequelize.DataTypes.INTEGER(5),
+                type: Sequelize.DataTypes.STRING(5),
                 allowNull: true
             },
             ville: {
+                type: Sequelize.DataTypes.STRING(60),
+                allowNull: true
+            },
+            pays: {
+                type: Sequelize.DataTypes.STRING(60),
+            },
+            Status: {
+                type: Sequelize.DataTypes.BOOLEAN,
+                allowNull: true
+            },
+            forget: {
                 type: Sequelize.DataTypes.STRING(60),
                 allowNull: true
             }

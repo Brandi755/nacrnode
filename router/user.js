@@ -1,8 +1,8 @@
-var express = require("express");
-var router = express.Router();
-var bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
-var db = require("../database/db");
+const express = require("express");
+const router = express.Router();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const db = require("../database/db");
 
 process.env.SECRET_KEY = 'secret';
 
