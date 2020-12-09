@@ -4,7 +4,7 @@ const express = require("express"),
     db = require("../database/db");
 // je lui rajoute un element en lui disant que je vx utiliser des operateur logique
 // plus petit que 1000 plus grand que 1000
-// const { Op } = require("sequelize");
+const { Op } = require("sequelize");
 
 // dans tout les fichier ou j'utilise process . env il faut c'est 2 c lignes soit presente
 //  .env ne fonctionne pas
@@ -275,8 +275,8 @@ router.get("/all/:limit/:offset", (req, res) => {
 router.get("/findBy/:marque", (req, res) => {
     db.produit.findAll({
             where: {
-                nom: {
-                    [Op.like]: "%" + req.params.nom,
+                marque: {
+                    [Op.like]: req.params.marque,
                 }
             },
             include: [{
