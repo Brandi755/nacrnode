@@ -2,14 +2,10 @@
 const express = require("express"),
     router = express.Router(), // 
     db = require("../database/db");
-// je lui rajoute un element en lui disant que je vx utiliser des operateur logique
-// plus petit que 1000 plus grand que 1000
+
 const { Op } = require("sequelize");
 
-// dans tout les fichier ou j'utilise process . env il faut c'est 2 c lignes soit presente
-//  .env ne fonctionne pas
-// dotenv = require("dotenv");
-// dotenv.config();
+
 
 // OK
 router.post("/new", (req, res) => {
@@ -93,8 +89,7 @@ router.get("/all", (req, res) => {
         })
 });
 
-// NON PAS OK
-// mise a jour
+
 // avec put je peux metre a jour une information le prix par exemple
 router.put("/update/:id", (req, res) => {
     db.produit.findOne({
@@ -272,11 +267,15 @@ router.get("/all/:limit/:offset", (req, res) => {
 //         })
 // });
 
+
+
+
+
 router.get("/findBy/:marque", (req, res) => {
     db.produit.findAll({
             where: {
                 marque: {
-                    [Op.like]: req.params.marque,
+                    [Op.like]: req.params.marque + "%",
                 }
             },
             include: [{
@@ -292,6 +291,11 @@ router.get("/findBy/:marque", (req, res) => {
             res.json(err)
         })
 });
+
+
+
+
+
 
 
 

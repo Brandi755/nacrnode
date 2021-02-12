@@ -1,3 +1,4 @@
+// table d'exportation avec tous les champs
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
         "client", {

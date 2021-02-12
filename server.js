@@ -21,7 +21,7 @@ app.use(BodyParser.urlencoded({ extended: false }));
 app.use("/client", require("./router/client"));
 
 app.use("/produit", require("./router/produit"));
-app.use("/command", require("./router/command"));
+app.use("/commande", require("./router/commande"));
 app.use("/user", require("./router/user"));
 app.use("/", require("./router/nodemailer"));
 

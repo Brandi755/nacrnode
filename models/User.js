@@ -1,3 +1,4 @@
+// table d'exportation avec tous les champs
 module.exports = (dbinfo, Sequelize) => {
     return dbinfo.define(
         "user", {
@@ -27,6 +28,10 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.STRING(45),
                 allowNull: false
             },
+            forget: {
+                type: Sequelize.DataTypes.STRING(60),
+                allowNull: true
+            }
 
 
         }, {

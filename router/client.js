@@ -3,9 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const db = require("../database/db");
-const { user } = require("../database/db");
 
-// var sendM = require("../envoiemail");
 
 
 
@@ -240,9 +238,6 @@ router.post("/validemail", (req, res) => {
 
 
 
-
-// OK (ne pas oublier de cocher dans postman les changement)
-// et change le mot de passe
 // metre a jour des info avec le id du client
 router.put("/update/:id", (req, res) => {
     db.client.findOne({
@@ -285,28 +280,8 @@ router.put("/update/:id", (req, res) => {
 
 
 
-// pour recuperer le profil(compte) du client grâce a son id
-router.get("/profile/:id", (req, res) => {
-    db.client.findOne({
-            where: { id: req.params.id }
-        })
-        .then(client => {
-            if (client) {
-                let token = jwt.sign(client.dataValues,
-                    process.env.SECRET_KEY, {
-                        expiresIn: 1440
-                    });
-                res.status(200).json({ token: token })
-            } else {
-                res.json("error le client n'est pas dans la base !!")
-            }
-        })
-        .catch(err => {
-            res.json(err)
-        })
-});
 
-//NON
+
 // route pour changer le mot de passe
 router.patch("/reset/:id", (req, res) => {
     db.client.findOne({

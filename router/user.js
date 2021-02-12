@@ -83,12 +83,13 @@ router.post("/login", (req, res) => {
                     var userdata = {
                         id: user.id,
                         role: user.role,
+                        email: user.email,
                         nom: user.nom,
                         prenom: user.prenom
                     }
                     let token = jwt.sign(userdata,
                         process.env.SECRET_KEY, {
-                            expiresIn: 1440
+                            // expiresIn: 1440
                         });
                     res.status(200).json({ auth: true, token: token })
                 } else {
@@ -145,7 +146,98 @@ router.put("/update/:id", (req, res) => {
 })
 
 
+// !
 
+router.post("/forgetpassword", (req, res) => {
+    var randtoken = require('rand-token');
+    var token = randtoken.generate(16);
+    db.user.findOne({
+            where: { email: req.body.email }
+        })
+        .then(user => {
+            if (user) {
+                user.update({
+                        forget: token
+                    }).then(item => {
+                        console.log("item.email: ", item.email);
+                        var nodemailer = require("nodemailer");
+
+                        var transporter = nodemailer.createTransport({
+                            host: 'smtp.gmail.com',
+                            port: 465,
+                            secure: true,
+                            service: "gmail",
+                            auth: {
+                                user: "digitalweb117@gmail.com",
+                                pass: "Pattedepie28"
+                            },
+                        });
+
+                        var mailOptions = {
+                            from: "brendabadin17@gmail.com",
+                            to: item.email,
+                            subject: "Sending Email using Node.js",
+                            html: "<a href=http://localhost:3000/user/pwd/" + item.forget + ">Metter a jour le mot de passe</a>"
+                        };
+
+                        transporter.sendMail(mailOptions, function(error, info) {
+                            if (error) {
+                                res.json(error);
+                                console.log("error email send : ", error);
+                            } else {
+                                console.log("info: ", info)
+                                console.log("email sent" + info.response);
+                                res.json("email sent" + info.response);
+                            }
+                        });
+                    })
+                    .catch(err => {
+                        console.log("err update");
+                        res.json(err)
+                    })
+            } else {
+                res.status(404).json("le utilisateur n'a pas été trouvé");
+            }
+        })
+        .catch(err => {
+            console.log("erreur ?");
+            res.json(err)
+        })
+});
+
+
+// router.post("/validemail", (req, res) => {
+//             db.user
+//                 .findOne({
+//                     where: { email: req.body.email },
+//                 })
+//                 .then((user) => {
+//                         if (user) {
+//                             if (user.Status != 1) {
+//                                 user
+//                                     .update({
+//                                         Status: 1,
+//                                     })
+//                                     .then((itemuser => {
+//                                             res.status(200).json("votre compte a ete activer");
+//                                         })
+//                                         .catch((err) => {
+//                                             res.json(err);
+//                                         });
+
+//                                     }
+//                                 else {
+//                                     res.json("votre compte est déja activer");
+//                                 }
+//                             } else {
+//                                 res.status(404).json("user not found");
+
+//                             }
+//                         })
+//                     .catch((err) => {
+//                         res.json(err);
+//                     });
+//                 });
 
 
 module.exports = router;

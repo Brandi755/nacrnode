@@ -1,44 +1,38 @@
-/************************************** Start Require module ****************************************************
- *****************************************************************************************************************/
-/**
- * Sequelize is a promise-based ORM for Node.js.
- * Sequelize is easy to learn and has dozens of cool features like synchronization, association, validation, etc.
- * It also has support for PostgreSQL, MySQL, MariaDB, SQLite, and MSSQL.
- * I am assuming you have some form of SQL database service started on your machine. I am currently using MySQL.
- * */
+// ORM
 const Sequelize = require('sequelize');
 
 
 
-/************************************** end Require module **********************************************
+/************************************** fin module requis **********************************************
  *******************************************************************************************************************/
 
 
-/************************************** Start connexion to database  **********************************************
+/************************************** connexion à la base de donée **********************************************
  *****************************************************************************************************************/
 // make our const db ;
 const db = {};
 
-// conn to database
-/**
- * new Sequelize({database},{username},{password},options{
- *     host:{hostname},
- *     dialect:  one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' , The dialect of the database you are connecting to.
- * One of mysql, postgres, sqlite and mssql. port: if you don't have change you mysql default port it will 3306, or if
- * you change make sure to use you port , operatorsAliases: {false}, pool: { sequelize connection pool configuration
- * max: { 5 numbre of max conn in you database}, Maximum number of connection in pool default: 5 min: {0 } Minimum
- * number of connection in pool,default: 0, acquire: {30000 } The maximum time, in milliseconds, that pool will try to
- * get connection before throwing error, default 60000, idle: { 10000 } The maximum time, in milliseconds, that a
- * connection can be idle before being released.
- *     }
- *
- * @type {Sequelize}
- */
+
+
+// connexion à la base de données
+// / **
+//   * new Sequelize ({database}, {username}, {password}, options {
+//   * hôte: {hostname},
+//   * dialecte: l'un des 'mysql' | «mariadb» | 'postgres' | 'mssql', le dialecte de la base de données à laquelle vous vous connectez.
+//   * Un des mysql, postgres, sqlite et mssql. port: si vous n'avez pas changé votre port par défaut mysql, il sera 3306, ou si
+//   * vous changez assurez-vous d'utiliser votre port, operatorsAlias: {false}, pool: {sequelize configuration du pool de connexion
+//   * max: {5 numbre of max conn in your database}, Nombre maximal de connexions dans le pool par défaut: 5 min: {0} Minimum
+//   * nombre de connexions dans le pool, par défaut: 0, acquisition: {30000} durée maximale, en millisecondes, pendant laquelle le pool tentera de
+//   * obtenir la connexion avant de lancer une erreur, par défaut 60000, inactif: {10000} La durée maximale, en millisecondes, pendant laquelle un
+//   * la connexion peut être inactive avant d'être libérée.
+
+
+
 
 const dbinfo = new Sequelize("acrdb", "root", "root", {
     host: "localhost",
     dialect: "mysql",
-    port: 3306,
+    port: 8889,
     pool: {
         max: 5,
         min: 0,
@@ -54,25 +48,32 @@ dbinfo.authenticate()
     });
 
 db.client = require("../models/Client")(dbinfo, Sequelize);
-db.command = require("../models/Command")(dbinfo, Sequelize);
+db.commande = require("../models/Commande")(dbinfo, Sequelize);
 db.contient = require("../models/Contient")(dbinfo, Sequelize);
 db.fournisseur = require("../models/Fournisseur")(dbinfo, Sequelize);
 db.produit = require("../models/Produit")(dbinfo, Sequelize);
 db.image = require("../models/Image")(dbinfo, Sequelize);
 db.user = require("../models/User")(dbinfo, Sequelize);
+db.selectionne = require("../models/Selectionne")(dbinfo, Sequelize);
+
 
 
 
 
 // 1,N
-db.client.hasMany(db.command, { foreignKey: 'clientId' });
-db.command.belongsTo(db.client, { foreignKey: 'clientId' });
+db.client.hasMany(db.commande, { foreignKey: 'clientId' });
+db.commande.belongsTo(db.client, { foreignKey: 'clientId' });
 
-db.command.belongsToMany(db.produit, { through: 'contient', foreignKey: 'commandId' });
+db.commande.belongsToMany(db.produit, { through: 'contient', foreignKey: 'commandeId' });
 
-db.produit.belongsToMany(db.command, { through: 'contient', foreignKey: 'produitId' });
+db.produit.belongsToMany(db.commande, { through: 'contient', foreignKey: 'produitId' });
+
+db.client.belongsToMany(db.produit, { through: 'selectionne', foreignKey: 'clientId' });
+db.produit.belongsToMany(db.client, { through: 'selectionne', foreignKey: 'produitId' });
+
 
 db.produit.hasMany(db.image, { foreignKey: 'produitId' });
+
 
 
 
