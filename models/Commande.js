@@ -37,6 +37,11 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.DECIMAL(7, 2),
                 allowNull: false
             },
+            userId: {
+                type: Sequelize.DataTypes.INTEGER(11),
+                allowNull: false
+            },
+
 
 
         }, {

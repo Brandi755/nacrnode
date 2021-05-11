@@ -15,6 +15,14 @@ module.exports = (dbinfo, Sequelize) => {
                 type: Sequelize.DataTypes.STRING(45),
                 allowNull: true
             },
+            adresse_livraison: {
+                type: Sequelize.DataTypes.STRING(300),
+                allowNull: true
+            },
+            adresse_facturation: {
+                type: Sequelize.DataTypes.STRING(300),
+                allowNull: true
+            },
             email: {
                 type: Sequelize.DataTypes.STRING(255),
                 allowNull: false,
@@ -31,7 +39,15 @@ module.exports = (dbinfo, Sequelize) => {
             forget: {
                 type: Sequelize.DataTypes.STRING(60),
                 allowNull: true
-            }
+            },
+            valid: {
+                type: Sequelize.DataTypes.BOOLEAN,
+                allowNull: true
+            },
+            validtoken: {
+                type: Sequelize.DataTypes.STRING(60),
+                allowNull: false
+            },
 
 
         }, {
