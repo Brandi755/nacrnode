@@ -4,7 +4,7 @@ html
     style
       include style.css
 
-h1.title Invoice number ##{invoice.id}
+h1.title Votre numéro de facture ##{invoice.id}
 
 p.created-at #{invoice.createdAt}
 
@@ -14,8 +14,8 @@ table
     thead
         tr
             th #
-            th Item
-            th Price
+            th Article
+            th Prix
     tbody
         each line in invoice.lines
             tr
@@ -23,9 +23,9 @@ table
                 td #{line.item}
                 td #{line.price}
 
-div.table-footer Shipping: #{invoice.shipping}
-div.table-footer total: #{invoice.total}
+div.table-footer Expédition: #{invoice.shipping}
+div.table-footer total: #{invoice.total} €
 
-h3.comments-title Comments
+h3.comments-title Autoclérapide
 p #{invoice.comments}
 
