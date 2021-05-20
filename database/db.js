@@ -30,13 +30,13 @@
 
 
  const dbinfo = new Sequelize("acrdb", "root", "root", {
-     host: "localhost",
-     dialect: "mysql",
-     port: 8889,
-     pool: {
-         max: 5,
-         min: 0,
-     }
+    host: "localhost",
+    dialect: "mysql",
+    port: 8889,
+    pool: {
+        max: 5,
+        min: 0,
+    }
  });
 
 

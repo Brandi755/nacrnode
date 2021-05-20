@@ -17,7 +17,6 @@ router.post("/new", (req, res) => {
     db.produit.findOne({
             //cherche la produit si existante par sa referances
             where: { ref: req.body.ref },
-
         })
         .then(produit => {
             if (!produit) {
