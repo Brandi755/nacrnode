@@ -21,7 +21,6 @@ app.use(BodyParser.urlencoded({ extended: false }));
 app.use("/produit", require("./router/produit"));
 app.use("/commande", require("./router/commande"));
 app.use("/user", require("./router/user"));
-app.use("/", require("./router/nodemailer"));
 app.get("/test", (req, res) => {
     console.log('test OK');
     res.status(200).send("L'API EST OPERATIONEL");

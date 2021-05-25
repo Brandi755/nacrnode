@@ -219,7 +219,7 @@ router.post("/forgetpassword", (req, res) => {
                                 from: "brendabadin17@gmail.com",
                                 to: item.email,
                                 subject: "Sending Email using Node.js",
-                                html: "<a href=http://localhost:8080/pwdchange/" + item.id + "/" + item.forget + ">Metter a jour le mot de passe</a>",
+                                html: "<a href=https://api-acr.herokuapp.com/pwdchange/" + item.id + "/" + item.forget + ">Metter a jour le mot de passe</a>",
                             };
                             transporter.sendMail(mailOptions, function(error, info) {
                                 if (error) {
@@ -294,7 +294,7 @@ router.post("/sendvalidemail", (req, res) => {
             from: "brendabadin17@gmail.com",
             to: user.email,
             subject: "Sending Email using Node.js",
-            html: "<a href=http://localhost:8080/validemail/" + user.email + "/" + user.validtoken + ">" +
+            html: "<a href=https://api-acr.herokuapp.com/validemail/" + user.email + "/" + user.validtoken + ">" +
                 "Valider Votre compte" +
                 "</a>",
         };
