@@ -10,7 +10,7 @@ module.exports = (dbinfo, Sequelize) => {
                 autoIncrement: true
             },
             info: {
-                type: Sequelize.DataTypes.JSONB,
+                type: Sequelize.DataTypes.STRING(5000),
                 allowNull: false
             },
             adresse_facturation: {

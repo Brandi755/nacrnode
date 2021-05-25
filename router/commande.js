@@ -172,6 +172,9 @@ router.post("/admin/edit/:id", (req, res) => {
 });
 
 function sendNewCommande(commande, userEmail) {
+  if (typeof commande.info == "string") {
+    commande.info = JSON.parse(commande.info);
+  }
   commande.info = commande.info.map((obj) => {
     obj.id = obj.produitId + '';
     obj.item = obj.nom + " " + obj.quantite;
@@ -228,6 +231,9 @@ router.post("/new", (req, res) => {
     });
     return;
   }
+  if (typeof req.body.info == "object") {
+    req.body.info = JSON.stringify(req.body.info);
+  }
   var commande = {
     // info: JSON.stringify(req.body.info),
     info: req.body.info,
@@ -242,9 +248,9 @@ router.post("/new", (req, res) => {
   db.commande
     .create(commande)
     .then((commande) => {
-      console.log("commande :> ", commande);
-      console.log(commande);
-      console.log("req.body.email :> ", req.body.email);
+      // console.log("commande :> ", commande);
+      // console.log(commande);
+      // console.log("req.body.email :> ", req.body.email);
       sendNewCommande(commande, req.body.email);
       res.status(200).json({
         info: "Commande ajouté",
@@ -252,6 +258,7 @@ router.post("/new", (req, res) => {
       });
     })
     .catch((err) => {
+      console.log(err);
       res.status(520).json(err);
     });
 });

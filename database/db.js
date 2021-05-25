@@ -27,12 +27,17 @@
  //   * la connexion peut être inactive avant d'être libérée.
 
 
+//  const dbinfo = new Sequelize("acrdb", "root", "root", {
+//     host: "localhost",
+//     dialect: "mysql",
+//     port: 8889,
+//     pool: {
+//         max: 5,
+//         min: 0,
+//     }
+//  });
 
-
- const dbinfo = new Sequelize("acrdb", "root", "root", {
-    host: "localhost",
-    dialect: "mysql",
-    port: 8889,
+ const dbinfo = new Sequelize("mysql://bd734d381fff75:ba19cb11@eu-cdbr-west-01.cleardb.com/heroku_20b308f582b1e65?reconnect=true", {
     pool: {
         max: 5,
         min: 0,
