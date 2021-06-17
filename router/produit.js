@@ -72,7 +72,7 @@ router.post("/new", (req, res) => {
         })
 
 });
-// OK
+
 // ici je veux get = recuperer toutes les clés = all
 router.get("/all", (req, res) => {
     db.produit.findAll({

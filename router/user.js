@@ -48,7 +48,7 @@ router.post("/admin", (req, res) => {
         });
 });
 
-// ok
+// route Inscription user
 router.post("/register", (req, res) => {
 
   function createNewUser() {
@@ -100,7 +100,7 @@ router.post("/verify", (req, res) => {
 });
 
 
-// ok utilsé dans le cahier
+// Utilisateur se log
 router.post("/login", (req, res) => {
     console.log(req.body);
     db.user
@@ -194,6 +194,7 @@ router.put("/update/:id", (req, res) => {
         });
 });
 
+// mot de passe oublié pas le user
 router.post("/forgetpassword", (req, res) => {
     var token = randtoken.generate(16);
     db.user.findOne({
@@ -216,10 +217,13 @@ router.post("/forgetpassword", (req, res) => {
                                 },
                             });
                             var mailOptions = {
-                                from: "brendabadin17@gmail.com",
+                                // from: "brendabadin17@gmail.com",
+                                user: "digitalweb117@gmail.com",
                                 to: item.email,
-                                subject: "Sending Email using Node.js",
-                                html: "<a href=https://api-acr.herokuapp.com/pwdchange/" + item.id + "/" + item.forget + ">Metter a jour le mot de passe</a>",
+                                subject: "Autoclérapide, créer votre nouveau mot de passe",
+                                // quand je clique sur le lien pour refaire mon mdp, dans l'URL il ya un TOKEN  + colonne forget SQL on le mets dans le lien pour avoir acces + le contenu mettez a jour le mdp!
+                                html: "<a href=https://autoclerapide.herokuapp.com/pwdchange/" + item.id + "/" + item.forget + ">Metter a jour le mot de passe</a>",
+                                //ancien html: "<a href=http://loclhoost/3000/user/pwdchange/" + item.id + "/" + item.forget + ">Metter a jour le mot de passe</a>",
                             };
                             transporter.sendMail(mailOptions, function(error, info) {
                                 if (error) {
@@ -289,12 +293,17 @@ router.post("/sendvalidemail", (req, res) => {
                 user: "digitalweb117@gmail.com",
                 pass: "Pattedepie28",
             },
+            // auth: {
+            //     user: "autoclerapide@gmail.com",
+            //     pass: "galandou5",
+            // },
         });
         var mailOptions = {
-            from: "brendabadin17@gmail.com",
+            // from: "brendabadin17@gmail.com",
+            
             to: user.email,
             subject: "Sending Email using Node.js",
-            html: "<a href=https://api-acr.herokuapp.com/validemail/" + user.email + "/" + user.validtoken + ">" +
+            html: "<a href=https://autoclerapide.herokuapp.com/validemail/" + user.email + "/" + user.validtoken + ">" +
                 "Valider Votre compte" +
                 "</a>",
         };

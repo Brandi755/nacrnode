@@ -18,6 +18,7 @@ var transporter = nodemailer.createTransport({
   },
 });
 
+
 router.use("/admin", function (req, res, next) {
   // console.log("midleware admin req.body: ", req.body);
   if (!req.body.token) {
@@ -84,7 +85,8 @@ router.post("/admin/delete/:id", (req, res) => {
           Merci de contacter le service client pour un rembourssement <br>\
           Merci pour votre confiance.</p>";
           var mailOptions = {
-            from: "brendabadin17@gmail.com",
+            // from: "brendabadin17@gmail.com",
+            from: "digitalweb117@gmail.com",
             to: email,
             subject: mailSubject,
             html: mailContent,
