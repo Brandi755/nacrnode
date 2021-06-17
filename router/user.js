@@ -217,8 +217,7 @@ router.post("/forgetpassword", (req, res) => {
                                 },
                             });
                             var mailOptions = {
-                                // from: "brendabadin17@gmail.com",
-                                user: "digitalweb117@gmail.com",
+                                from: "brendabadin17@gmail.com",
                                 to: item.email,
                                 subject: "Autoclérapide, créer votre nouveau mot de passe",
                                 // quand je clique sur le lien pour refaire mon mdp, dans l'URL il ya un TOKEN  + colonne forget SQL on le mets dans le lien pour avoir acces + le contenu mettez a jour le mdp!
@@ -299,8 +298,7 @@ router.post("/sendvalidemail", (req, res) => {
             // },
         });
         var mailOptions = {
-            // from: "brendabadin17@gmail.com",
-            
+            from: "brendabadin17@gmail.com",
             to: user.email,
             subject: "Sending Email using Node.js",
             html: "<a href=https://autoclerapide.herokuapp.com/validemail/" + user.email + "/" + user.validtoken + ">" +
